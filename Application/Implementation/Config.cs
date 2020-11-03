@@ -3,9 +3,31 @@ using Application.Services;
 
 namespace Application.Implementation
 {
-	public class Config : IConfig
+	public class Config : IConfigService
 	{
-		public string Get(string key)
+		public string GetTelegramChatId()
+		{
+			return Get("TelegramChatId");
+		}
+
+		public string GetTelegramApiKey()
+		{
+			return Get("TelegramApiKey");
+		}
+
+		public string GetAlphavantageApiKey()
+		{
+			return Get("AlphavantageApiKey");
+		}
+
+		public string[] GetStockSymbols()
+		{
+			var stockSymbols = Get("StockSymbols");
+
+			return stockSymbols.Split(',');
+		}
+
+		private string Get(string key)
 		{
 			var envValue = Environment.GetEnvironmentVariable(key);
 

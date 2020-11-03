@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using AlphaVantage.Net.Core.Client;
-using AlphaVantage.Net.Stocks;
-using AlphaVantage.Net.Stocks.Client;
 using Application.Services;
+using Application.Services.StockService;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Telegram.Bot;
 
 namespace Application.Stock.Command
 {
@@ -27,40 +23,29 @@ namespace Application.Stock.Command
 
 		public class Handler : IRequestHandler<SendStockInfoMessageCommand, Unit>
 		{
-			private readonly IConfig _config;
+			private readonly IConfigService _config;
 			private readonly ILogger _logger;
+			private readonly IStockService _stockService;
+			private readonly ITelegramService _telegramService;
 
-			public Handler(IConfig config, ILogger logger)
+			public Handler(IConfigService config, ITelegramService telegramService, ILogger logger, IStockService stockService)
 			{
 				_config = config;
+				_telegramService = telegramService;
 				_logger = logger;
+				_stockService = stockService;
 			}
 
 			public async Task<Unit> Handle(SendStockInfoMessageCommand request, CancellationToken cancellationToken)
 			{
-				var apiKey = _config.Get("TelegramApiKey");
-				var alphavantageApiKey = _config.Get("AlphavantageApiKey");
-
-				if (string.IsNullOrWhiteSpace(apiKey))
-					throw new Exception("invalid telegram api config");
-
-				using var alphavantageClient = new AlphaVantageClient(alphavantageApiKey);
-				using var stockClient = alphavantageClient.Stocks();
-				var symbolsInfo = new List<GlobalQuote>();
+				var symbolsInfo = new List<Quote>();
 
 				foreach (var symbol in request.Symbols.Take(5)) // take only 5 because the alphaVantage api throttles down to 5 requests per min.
 				{
-					var quote = await stockClient.GetGlobalQuoteAsync(symbol);
-					if (quote is null)
-					{
-						_logger.LogWarning("Cannot get quote info for symbol {Symbol}", symbol);
-						continue;
-					}
+					var quote = await _stockService.GetQuoteAsync(symbol);
 
 					symbolsInfo.Add(quote);
 				}
-
-				var botClient = new TelegramBotClient(apiKey);
 
 				var stringBuilder = new StringBuilder();
 				stringBuilder.AppendLine("Hey here is your daily 📅 stock price update 🌐");
@@ -76,7 +61,7 @@ namespace Application.Stock.Command
 				stringBuilder.AppendLine();
 				stringBuilder.AppendLine("Hope its going good for you ☺️");
 
-				await botClient.SendTextMessageAsync(request.ChatId, stringBuilder.ToString(), cancellationToken: cancellationToken);
+				await _telegramService.SendMessageAsync(request.ChatId, stringBuilder.ToString(), cancellationToken);
 
 				return Unit.Value;
 			}

@@ -1,5 +1,6 @@
 ﻿using Application.Implementation;
 using Application.Services;
+using Application.Services.StockService;
 using Application.Stock.Command;
 using MediatR;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -15,7 +16,9 @@ namespace StockBot
 		public override void Configure(IFunctionsHostBuilder builder)
 		{
 			builder.Services.AddMediatR(typeof(SendStockInfoMessageCommand));
-			builder.Services.AddScoped<IConfig, Config>();
+			builder.Services.AddScoped<IConfigService, Config>();
+			builder.Services.AddScoped<ITelegramService, TelegramService>();
+			builder.Services.AddScoped<IStockService, AlphavantageStockService>();
 		}
 	}
 }

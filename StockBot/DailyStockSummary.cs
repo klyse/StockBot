@@ -9,23 +9,24 @@ namespace StockBot
 {
 	public class DailyStockSummary
 	{
-		private readonly IConfig _config;
+		private readonly IConfigService _config;
 		private readonly IMediator _mediator;
 
-		public DailyStockSummary(IMediator mediator, IConfig config)
+		public DailyStockSummary(IMediator mediator, IConfigService config)
 		{
 			_mediator = mediator;
 			_config = config;
 		}
 
 		[FunctionName("DailyStockSummary")]
-		public async Task RunAsync([TimerTrigger("%Timers:DailyStockSummary%")] TimerInfo myTimer, ILogger log)
+		public async Task RunAsync([TimerTrigger("%Timers:DailyStockSummary%")]
+			TimerInfo myTimer, ILogger log)
 		{
 			log.LogInformation("Trigger function started execution");
 
 			await _mediator.Send(new SendStockInfoMessageCommand(
-				_config.Get("StockSymbols").Split(','),
-				_config.Get("TelegramChatId")));
+				_config.GetStockSymbols(),
+				_config.GetTelegramChatId()));
 
 			log.LogInformation("Trigger function completed execution");
 		}
