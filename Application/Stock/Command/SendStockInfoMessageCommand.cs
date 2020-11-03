@@ -63,7 +63,7 @@ namespace Application.Stock.Command
 				var botClient = new TelegramBotClient(apiKey);
 
 				var stringBuilder = new StringBuilder();
-				stringBuilder.AppendLine($"Hey here is your daily 📅 stock price update 🌐");
+				stringBuilder.AppendLine("Hey here is your daily 📅 stock price update 🌐");
 				stringBuilder.AppendLine();
 
 				foreach (var quote in symbolsInfo)
