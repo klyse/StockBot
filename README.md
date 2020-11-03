@@ -12,7 +12,10 @@ Sends the stock info of the day before at 07:00 UTC.
 ## Stock info
 Provided by: https://www.alphavantage.co/
 
-Limited to 5 requests / min and 500 request per day in free version
+Limited to 5 requests/min and 500 requests per day in free version
 
 ## Telegram Bot
 Register using BotFahter: https://telegram.me/BotFather
+
+## Doker-Compose
+`` docker-compose up`` in solution file to the startup runtime environment.
