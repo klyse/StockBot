@@ -2,6 +2,8 @@
 
 Sends the stock info of the day before at 07:00 UTC.
 
+Deployment on Azure Functions.
+
 ## Configuration Keys
 * AlphavantageApiKey
 * TelegramChatId
