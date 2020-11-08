@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.Services;
-using Application.Stock.Command;
+using Application.Stock.Command.SendStockInfoMessageCommand;
+using Application.Stock.Queries.GetChatIds;
 using MediatR;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -22,13 +23,9 @@ namespace StockBot
 		public async Task RunAsync([TimerTrigger("%Timers:DailyStockSummary%")]
 			TimerInfo myTimer, ILogger log)
 		{
-			log.LogInformation("Trigger function started execution");
+			var chatIds = await _mediator.Send(new GetChatsIds());
 
-			await _mediator.Send(new SendStockInfoMessageCommand(
-				_config.GetStockSymbols(),
-				_config.GetTelegramChatId()));
-
-			log.LogInformation("Trigger function completed execution");
+			foreach (var id in chatIds.Ids) await _mediator.Send(new SendStockInfoMessageCommand(id));
 		}
 	}
 }

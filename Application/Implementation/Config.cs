@@ -20,11 +20,9 @@ namespace Application.Implementation
 			return Get("AlphavantageApiKey");
 		}
 
-		public string[] GetStockSymbols()
+		public string GetMongoDbConnectionString()
 		{
-			var stockSymbols = Get("StockSymbols");
-
-			return stockSymbols.Split(',');
+			return Get("ConnectionStrings:MongoDb");
 		}
 
 		private string Get(string key)

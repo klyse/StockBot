@@ -5,6 +5,6 @@
 		string GetTelegramChatId();
 		string GetTelegramApiKey();
 		string GetAlphavantageApiKey();
-		string[] GetStockSymbols();
+		string GetMongoDbConnectionString();
 	}
 }

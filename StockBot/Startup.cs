@@ -1,10 +1,11 @@
 ﻿using Application.Implementation;
 using Application.Services;
 using Application.Services.StockService;
-using Application.Stock.Command;
+using Application.Stock.Command.SendStockInfoMessageCommand;
 using MediatR;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence;
 using StockBot;
 
 [assembly: FunctionsStartup(typeof(Startup))]
@@ -19,6 +20,7 @@ namespace StockBot
 			builder.Services.AddScoped<IConfigService, Config>();
 			builder.Services.AddScoped<ITelegramService, TelegramService>();
 			builder.Services.AddScoped<IStockService, AlphavantageStockService>();
+			builder.Services.AddScoped<IStockDb, StockDb>();
 		}
 	}
 }

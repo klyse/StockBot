@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,42 +7,50 @@ using Application.Services;
 using Application.Services.StockService;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
-namespace Application.Stock.Command
+namespace Application.Stock.Command.SendStockInfoMessageCommand
 {
 	public class SendStockInfoMessageCommand : IRequest
 	{
-		public SendStockInfoMessageCommand(string[] symbols, string chatId)
+		public SendStockInfoMessageCommand(string chatId)
 		{
-			Symbols = symbols;
 			ChatId = chatId;
 		}
 
-		public string[] Symbols { get; }
 		public string ChatId { get; }
 
 		public class Handler : IRequestHandler<SendStockInfoMessageCommand, Unit>
 		{
 			private readonly IConfigService _config;
 			private readonly ILogger _logger;
+			private readonly IStockDb _stockDb;
 			private readonly IStockService _stockService;
 			private readonly ITelegramService _telegramService;
 
-			public Handler(IConfigService config, ITelegramService telegramService, ILogger logger, IStockService stockService)
+			public Handler(IConfigService config, ITelegramService telegramService, ILogger logger, IStockService stockService, IStockDb stockDb)
 			{
 				_config = config;
 				_telegramService = telegramService;
 				_logger = logger;
 				_stockService = stockService;
+				_stockDb = stockDb;
 			}
 
 			public async Task<Unit> Handle(SendStockInfoMessageCommand request, CancellationToken cancellationToken)
 			{
+				var chat = await _stockDb.Chat.Aggregate()
+					.Match(c => c.ChatId == request.ChatId)
+					.FirstAsync(cancellationToken);
+
+				if (chat is null)
+					throw new NullReferenceException("Chat not found");
+
 				var symbolsInfo = new List<Quote>();
 
-				foreach (var symbol in request.Symbols.Take(5)) // take only 5 because the alphaVantage api throttles down to 5 requests per min.
+				foreach (var symbol in chat.Symbols)
 				{
-					var quote = await _stockService.GetQuoteAsync(symbol);
+					var quote = await _stockService.GetQuoteAsync(symbol.Name);
 
 					symbolsInfo.Add(quote);
 				}
