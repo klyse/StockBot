@@ -44,7 +44,7 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 					.FirstAsync(cancellationToken);
 
 				if (chat is null)
-					throw new NullReferenceException("Chat not found");
+					throw new NullReferenceException("chat not found");
 
 				var symbolsInfo = new List<Quote>();
 
