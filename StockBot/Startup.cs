@@ -21,6 +21,7 @@ namespace StockBot
 			builder.Services.AddScoped<ITelegramService, TelegramService>();
 			builder.Services.AddScoped<IStockService, AlphavantageStockService>();
 			builder.Services.AddScoped<IStockDb, StockDb>();
+			builder.Services.AddScoped<ITelemetryService, TelemetryService>();
 		}
 	}
 }

@@ -39,7 +39,7 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 
 			public async Task<Unit> Handle(SendStockInfoMessageCommand request, CancellationToken cancellationToken)
 			{
-				var chat = await _stockDb.Chat.Aggregate()
+				var chat = await _stockDb.Chats.Aggregate()
 					.Match(c => c.ChatId == request.ChatId)
 					.FirstAsync(cancellationToken);
 

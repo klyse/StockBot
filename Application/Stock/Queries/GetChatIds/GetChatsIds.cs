@@ -20,7 +20,7 @@ namespace Application.Stock.Queries.GetChatIds
 
 			public async Task<ChatIdsDto> Handle(GetChatsIds request, CancellationToken cancellationToken)
 			{
-				var chatIds = await _stockDb.Chat.Aggregate()
+				var chatIds = await _stockDb.Chats.Aggregate()
 					.Project(r => new {r.ChatId})
 					.ToListAsync(cancellationToken);
 

@@ -7,11 +7,11 @@ namespace Domain
 	{
 		public Chat()
 		{
-			Symbols = new List<Symbol>();
+			Symbols = new List<ChatSymbol>();
 		}
 
 		public ObjectId Id { get; set; }
 		public string ChatId { get; set; }
-		public ICollection<Symbol> Symbols { get; set; }
+		public ICollection<ChatSymbol> Symbols { get; set; }
 	}
 }
