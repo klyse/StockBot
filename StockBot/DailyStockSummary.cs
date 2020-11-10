@@ -1,31 +1,60 @@
-﻿using System.Threading.Tasks;
-using Application.Services;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.Stock.Command.SendStockInfoMessageCommand;
 using Application.Stock.Queries.GetChatIds;
 using MediatR;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 
 namespace StockBot
 {
 	public class DailyStockSummary
 	{
-		private readonly IConfigService _config;
 		private readonly IMediator _mediator;
 
-		public DailyStockSummary(IMediator mediator, IConfigService config)
+		public DailyStockSummary(IMediator mediator)
 		{
 			_mediator = mediator;
-			_config = config;
 		}
 
 		[FunctionName("DailyStockSummary")]
-		public async Task RunAsync([TimerTrigger("%Timers:DailyStockSummary%")]
-			TimerInfo myTimer, ILogger log)
+		public async Task<string> DailyStockSummaryAsync([ActivityTrigger] string chatId, ILogger log)
 		{
-			var chatIds = await _mediator.Send(new GetChatsIds());
+			await _mediator.Send(new SendStockInfoMessageCommand(chatId));
+			return chatId;
+		}
 
-			foreach (var id in chatIds.Ids) await _mediator.Send(new SendStockInfoMessageCommand(id));
+		[FunctionName("Orchestration_DailyStockSummary")]
+		public async Task<IEnumerable<string>> Orchestration_DailyStockSummary(
+			[OrchestrationTrigger] IDurableOrchestrationContext context,
+			ILogger logger)
+		{
+			logger.LogInformation("Orchestrator");
+			var chatIds = _mediator.Send(new GetChatsIds()).GetAwaiter().GetResult();
+
+			var sentWithSuccess = new List<string>();
+
+			foreach (var chatId in chatIds.Ids)
+			{
+				logger.LogInformation("DailyStockSummary {ChatId}", chatId);
+
+				var activityResponse = await context.CallActivityAsync<string>("DailyStockSummary", chatId);
+				sentWithSuccess.Add(activityResponse);
+
+				logger.LogInformation("DailyStockSummary {ChatId}: done", chatId);
+			}
+
+			return sentWithSuccess;
+		}
+
+		[FunctionName("Start_DailyStockSummary")]
+		public static async Task Start_DailyStockSummary([TimerTrigger("%Timers:DailyStockSummary%")]
+			TimerInfo myTimer, ILogger log,
+			[DurableClient] IDurableOrchestrationClient starter)
+		{
+			var instanceId = await starter.StartNewAsync("Orchestration_DailyStockSummary", null);
+			log.LogInformation("Started {InstanceId}", instanceId);
 		}
 	}
 }
