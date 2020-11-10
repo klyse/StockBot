@@ -11,7 +11,7 @@ namespace Domain
 		}
 
 		public ObjectId Id { get; set; }
-		public string ChatId { get; set; }
+		public string ChatId { get; set; } = null!;
 		public ICollection<ChatSymbol> Symbols { get; set; }
 	}
 }

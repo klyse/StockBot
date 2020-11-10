@@ -4,6 +4,11 @@ namespace Application.Stock.Queries.GetChatIds
 {
 	public class ChatIdsDto
 	{
-		public List<string> Ids { get; set; }
+		public ChatIdsDto(List<string> ids)
+		{
+			Ids = ids;
+		}
+
+		public List<string> Ids { get; }
 	}
 }

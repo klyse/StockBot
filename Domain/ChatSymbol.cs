@@ -1,25 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain
 {
 	public class ChatSymbol
 	{
-		public string Name { get; set; }
+		public string Name { get; set; } = null!;
+
+		[BsonRepresentation(BsonType.Decimal128)]
 		public decimal PurchasePrice { get; set; }
-	}
-
-	public class Symbol
-	{
-		public Symbol()
-		{
-			PriceHistory = new Dictionary<DateTimeOffset, decimal>();
-		}
-
-		public string Name { get; set; }
-		public decimal LastPrice { get; set; }
-		public DateTimeOffset LastInfo { get; set; }
-
-		public IDictionary<DateTimeOffset, decimal> PriceHistory { get; set; }
 	}
 }
