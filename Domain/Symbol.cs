@@ -18,6 +18,9 @@ namespace Domain
 		[BsonRepresentation(BsonType.Decimal128)]
 		public decimal LastPrice { get; set; }
 
+		[BsonRepresentation(BsonType.Decimal128)]
+		public decimal LastChangePercent { get; set; }
+
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
 		public DateTime LastInfo { get; set; }
 

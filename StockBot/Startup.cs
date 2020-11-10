@@ -16,6 +16,7 @@ namespace StockBot
 	{
 		public override void Configure(IFunctionsHostBuilder builder)
 		{
+			builder.Services.AddLogging();
 			builder.Services.AddMediatR(typeof(SendStockInfoMessageCommand));
 			builder.Services.AddScoped<IConfigService, Config>();
 			builder.Services.AddScoped<ITelegramService, TelegramService>();
