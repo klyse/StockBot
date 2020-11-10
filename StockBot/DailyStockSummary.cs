@@ -23,34 +23,40 @@ namespace StockBot
 		}
 
 		[FunctionName("DailyStockSummary")]
-		public async Task<string> DailyStockSummaryAsync([ActivityTrigger] string chatId, ILogger log)
+		public async Task DailyStockSummaryAsync([ActivityTrigger] string chatId, ILogger log)
 		{
 			await _mediator.Send(new SendStockInfoMessageCommand(chatId));
-			return chatId;
+		}
+
+		[FunctionName("UpdateSymbols")]
+		public async Task UpdateSymbols([ActivityTrigger] object o, ILogger log)
+		{
+			await _mediator.Send(new UpdateSymbolsCommand());
 		}
 
 		[FunctionName("Orchestration_DailyStockSummary")]
-		public async Task<IEnumerable<string>> Orchestration_DailyStockSummary(
+		public async Task Orchestration_DailyStockSummary(
 			[OrchestrationTrigger] IDurableOrchestrationContext context,
 			ILogger logger)
 		{
 			var chatIds = _mediator.Send(new GetChatsIdsQuery()).GetAwaiter().GetResult();
 
-			var sentWithSuccess = new List<string>();
+			await context.CallActivityAsync("UpdateSymbols", null);
 
 			_telemetry.TrackChatCount(chatIds.Ids.Count);
+
+			var parallelTasks = new List<Task<string>>();
 
 			foreach (var chatId in chatIds.Ids)
 			{
 				logger.LogInformation("DailyStockSummary {ChatId}", chatId);
 
-				var activityResponse = await context.CallActivityAsync<string>("DailyStockSummary", chatId);
-				sentWithSuccess.Add(activityResponse);
+				parallelTasks.Add(context.CallActivityAsync<string>("DailyStockSummary", chatId));
 
 				logger.LogInformation("DailyStockSummary {ChatId}: done", chatId);
 			}
 
-			return sentWithSuccess;
+			await Task.WhenAll(parallelTasks);
 		}
 
 		[FunctionName("Start_DailyStockSummary")]
@@ -58,8 +64,6 @@ namespace StockBot
 			TimerInfo myTimer, ILogger log,
 			[DurableClient] IDurableOrchestrationClient starter)
 		{
-			await _mediator.Send(new UpdateSymbolsCommand());
-
 			var instanceId = await starter.StartNewAsync("Orchestration_DailyStockSummary", null);
 			log.LogInformation("Started {InstanceId}", instanceId);
 		}

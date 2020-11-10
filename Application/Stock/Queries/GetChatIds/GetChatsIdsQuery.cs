@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Services;
@@ -23,6 +24,9 @@ namespace Application.Stock.Queries.GetChatIds
 				var chatIds = _stockDb.Chats.AsQueryable()
 					.Select(r => r.ChatId)
 					.ToList();
+
+				if (chatIds is null)
+					throw new NullReferenceException("chat ids are null");
 
 				return Task.FromResult(new ChatIdsDto(chatIds));
 			}

@@ -13,7 +13,9 @@ namespace Domain
 		}
 
 		public ObjectId Id { get; set; }
-		public string Name { get; set; }
+		public string Name { get; set; } = null!;
+
+		[BsonRepresentation(BsonType.Decimal128)]
 		public decimal LastPrice { get; set; }
 
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]

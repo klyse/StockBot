@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain
@@ -8,6 +9,7 @@ namespace Domain
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
 		public DateTime TimeStamp { get; set; }
 
+		[BsonRepresentation(BsonType.Decimal128)]
 		public decimal Price { get; set; }
 	}
 }
