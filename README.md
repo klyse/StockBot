@@ -19,5 +19,5 @@ Limited to 5 requests/min and 500 requests per day in free version
 ## Telegram Bot
 Register using BotFahter: https://telegram.me/BotFather
 
-## Doker-Compose
-`` docker-compose up`` in solution file to the startup runtime environment.
+## Debug
+Start the Azure Storage Emulator before debugging.
