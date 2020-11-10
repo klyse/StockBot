@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Services;
 using Application.Stock.Command.SendStockInfoMessageCommand;
 using Application.Stock.Queries.GetChatIds;
 using MediatR;
@@ -12,10 +13,12 @@ namespace StockBot
 	public class DailyStockSummary
 	{
 		private readonly IMediator _mediator;
+		private readonly ITelemetryService _telemetry;
 
-		public DailyStockSummary(IMediator mediator)
+		public DailyStockSummary(IMediator mediator, ITelemetryService telemetry)
 		{
 			_mediator = mediator;
+			_telemetry = telemetry;
 		}
 
 		[FunctionName("DailyStockSummary")]
@@ -30,10 +33,11 @@ namespace StockBot
 			[OrchestrationTrigger] IDurableOrchestrationContext context,
 			ILogger logger)
 		{
-			logger.LogInformation("Orchestrator");
 			var chatIds = _mediator.Send(new GetChatsIds()).GetAwaiter().GetResult();
 
 			var sentWithSuccess = new List<string>();
+
+			_telemetry.TrackChatCount(chatIds.Ids.Count);
 
 			foreach (var chatId in chatIds.Ids)
 			{
@@ -49,7 +53,7 @@ namespace StockBot
 		}
 
 		[FunctionName("Start_DailyStockSummary")]
-		public static async Task Start_DailyStockSummary([TimerTrigger("%Timers:DailyStockSummary%")]
+		public async Task Start_DailyStockSummary([TimerTrigger("%Timers:DailyStockSummary%")]
 			TimerInfo myTimer, ILogger log,
 			[DurableClient] IDurableOrchestrationClient starter)
 		{

@@ -1,4 +1,4 @@
-﻿using Application.Services;
+using Application.Services;
 using Domain;
 using MongoDB.Driver;
 
@@ -16,9 +16,9 @@ namespace Persistence
 			var databaseName = MongoUrl.Create(connectionString).DatabaseName;
 			_db = _client.GetDatabase(databaseName);
 
-			Chat = _db.GetCollection<Chat>(nameof(Domain.Chat));
+			Chats = _db.GetCollection<Chat>(nameof(Chat));
 		}
 
-		public IMongoCollection<Chat> Chat { get; }
+		public IMongoCollection<Chat> Chats { get; }
 	}
 }
