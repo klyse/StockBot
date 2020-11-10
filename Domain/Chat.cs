@@ -3,12 +3,6 @@ using MongoDB.Bson;
 
 namespace Domain
 {
-	public class Symbol
-	{
-		public string Name { get; set; }
-		public decimal PurchasePrice { get; set; }
-	}
-
 	public class Chat
 	{
 		public Chat()

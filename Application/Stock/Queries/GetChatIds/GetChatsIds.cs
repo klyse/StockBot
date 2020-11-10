@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Services;
@@ -8,11 +7,6 @@ using MongoDB.Driver;
 
 namespace Application.Stock.Queries.GetChatIds
 {
-	public class ChatIdsDto
-	{
-		public List<string> Ids { get; set; }
-	}
-
 	public class GetChatsIds : IRequest<ChatIdsDto>
 	{
 		public class Handler : IRequestHandler<GetChatsIds, ChatIdsDto>
