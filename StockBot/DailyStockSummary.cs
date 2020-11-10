@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Application.Services;
 using Application.Stock.Command.SendStockInfoMessageCommand;
+using Application.Stock.Command.UpdateSymbolsCommand;
 using Application.Stock.Queries.GetChatIds;
 using MediatR;
 using Microsoft.Azure.WebJobs;
@@ -33,7 +34,7 @@ namespace StockBot
 			[OrchestrationTrigger] IDurableOrchestrationContext context,
 			ILogger logger)
 		{
-			var chatIds = _mediator.Send(new GetChatsIds()).GetAwaiter().GetResult();
+			var chatIds = _mediator.Send(new GetChatsIdsQuery()).GetAwaiter().GetResult();
 
 			var sentWithSuccess = new List<string>();
 
@@ -57,6 +58,8 @@ namespace StockBot
 			TimerInfo myTimer, ILogger log,
 			[DurableClient] IDurableOrchestrationClient starter)
 		{
+			await _mediator.Send(new UpdateSymbolsCommand());
+
 			var instanceId = await starter.StartNewAsync("Orchestration_DailyStockSummary", null);
 			log.LogInformation("Started {InstanceId}", instanceId);
 		}

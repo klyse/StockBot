@@ -1,4 +1,4 @@
-using Domain;
+﻿using Domain;
 using MongoDB.Driver;
 
 namespace Application.Services
@@ -6,5 +6,6 @@ namespace Application.Services
 	public interface IStockDb
 	{
 		IMongoCollection<Chat> Chats { get; }
+		IMongoCollection<Symbol> Symbols { get; }
 	}
 }
