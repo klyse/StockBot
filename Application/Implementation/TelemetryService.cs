@@ -16,5 +16,15 @@ namespace Application.Implementation
 		{
 			_telemetryClient.TrackMetric("ChatCount", count);
 		}
+
+		public void TrackTotalSymbols(int count)
+		{
+			_telemetryClient.TrackMetric("TotalSymbolsCount", count);
+		}
+
+		public void TrackSymbolsToRefresh(int count)
+		{
+			_telemetryClient.TrackMetric("SymbolsToRefresh", count);
+		}
 	}
 }

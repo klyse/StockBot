@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Services;
-using Application.Services.StockService;
+using Domain;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using Telegram.Bot.Exceptions;
 
 namespace Application.Stock.Command.SendStockInfoMessageCommand
 {
@@ -22,54 +24,67 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 
 		public class Handler : IRequestHandler<SendStockInfoMessageCommand, Unit>
 		{
-			private readonly IConfigService _config;
-			private readonly ILogger _logger;
+			private const int MaxInformationAgeDays = 2;
+			private readonly ILogger<Handler> _log;
 			private readonly IStockDb _stockDb;
-			private readonly IStockService _stockService;
 			private readonly ITelegramService _telegramService;
 
-			public Handler(IConfigService config, ITelegramService telegramService, ILogger logger, IStockService stockService, IStockDb stockDb)
+			public Handler(ITelegramService telegramService, IStockDb stockDb, ILogger<Handler> log)
 			{
-				_config = config;
 				_telegramService = telegramService;
-				_logger = logger;
-				_stockService = stockService;
 				_stockDb = stockDb;
+				_log = log;
 			}
 
 			public async Task<Unit> Handle(SendStockInfoMessageCommand request, CancellationToken cancellationToken)
 			{
-				var chat = await _stockDb.Chats.Aggregate()
-					.Match(c => c.ChatId == request.ChatId)
-					.FirstAsync(cancellationToken);
+				var chat = await _stockDb.Chats.AsQueryable()
+					.FirstOrDefaultAsync(c => c.ChatId == request.ChatId, cancellationToken);
 
 				if (chat is null)
 					throw new NullReferenceException("chat not found");
 
-				var symbolsInfo = new List<Quote>();
+				var symbolsInfo = (await _stockDb.Symbols.Aggregate()
+						.Match(Builders<Symbol>.Filter.In(c => c.Name, chat.Symbols.Select(y => y.Name)))
+						.Match(r => r.LastInfo > DateTime.UtcNow.AddDays(-MaxInformationAgeDays))
+						.ToListAsync(cancellationToken))
+					.ToDictionary(c => c.Name, c => c);
+
+				var stringBuilder = new StringBuilder();
+				stringBuilder.AppendLine("Hey here is your 📅 stock update 🌐");
+				stringBuilder.AppendLine();
 
 				foreach (var symbol in chat.Symbols)
 				{
-					var quote = await _stockService.GetQuoteAsync(symbol.Name);
+					Symbol quote;
+					if (symbolsInfo.ContainsKey(symbol.Name))
+					{
+						quote = symbolsInfo[symbol.Name];
+					}
+					else
+					{
+						stringBuilder.AppendLine($"Symbol not found: {symbol.Name}");
+						continue;
+					}
 
-					symbolsInfo.Add(quote);
-				}
-
-				var stringBuilder = new StringBuilder();
-				stringBuilder.AppendLine("Hey here is your daily 📅 stock price update 🌐");
-				stringBuilder.AppendLine();
-
-				foreach (var quote in symbolsInfo)
-				{
-					var emojiChart = quote.ChangePercent >= 0 ? "📈" : "📉";
-					var emojiCircle = quote.ChangePercent >= 0 ? "🟢" : "🔴"; // green : red
-					stringBuilder.AppendLine($"{quote.Symbol,-9} {emojiCircle}: {quote.ChangePercent:F2}% {emojiChart} ({quote.Price:F2}€)");
+					var emojiChart = quote.LastChangePercent >= 0 ? "📈" : "📉";
+					var emojiCircle = quote.LastChangePercent >= 0 ? "🟢" : "🔴"; // green : red
+					stringBuilder.AppendLine($"{quote.Name,-9} {emojiCircle}: {quote.LastChangePercent:F2}% {emojiChart} ({quote.LastPrice:F2}€)");
 				}
 
 				stringBuilder.AppendLine();
 				stringBuilder.AppendLine("Hope its going good for you ☺️");
 
-				await _telegramService.SendMessageAsync(request.ChatId, stringBuilder.ToString(), cancellationToken);
+				try
+				{
+					await _telegramService.SendMessageAsync(request.ChatId, stringBuilder.ToString(), cancellationToken);
+				}
+				catch (ChatNotFoundException e)
+				{
+					await _stockDb.Chats.DeleteOneAsync(r => r.Id == chat.Id, cancellationToken);
+					_log.LogError(e, "Chat wit id {ChatId} not found, removed it from db", request.ChatId);
+					throw;
+				}
 
 				return Unit.Value;
 			}
