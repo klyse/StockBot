@@ -8,7 +8,7 @@ namespace Application.Requests.Chat.TelegramCommands.UnsubscribeChat
 {
 	public class UnsubscribeChatCommand : BaseTelegramCommand, IRequest
 	{
-		public UnsubscribeChatCommand(string chatId, string command, string fullCommand) : base(chatId, command, fullCommand)
+		public UnsubscribeChatCommand(string chatId, string command, string fullCommand) : base("/unsubscribe", chatId, command, fullCommand)
 		{
 		}
 

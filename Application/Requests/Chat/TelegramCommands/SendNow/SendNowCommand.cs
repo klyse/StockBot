@@ -12,7 +12,7 @@ namespace Application.Requests.Chat.TelegramCommands.SendNow
 {
 	public class SendNowCommand : BaseTelegramCommand, IRequest
 	{
-		public SendNowCommand(string chatId, string command, string fullCommand) : base(chatId, command, fullCommand)
+		public SendNowCommand(string chatId, string command, string fullCommand) : base("/now", chatId, command, fullCommand)
 		{
 		}
 
