@@ -39,9 +39,9 @@ namespace StockBot.Functions
 			[OrchestrationTrigger] IDurableOrchestrationContext context,
 			ILogger logger)
 		{
-			var chatIds = _mediator.Send(new GetChatsIdsQuery()).GetAwaiter().GetResult();
-
 			await context.CallActivityAsync("UpdateSymbols", null);
+
+			var chatIds = _mediator.Send(new GetChatsIdsQuery()).GetAwaiter().GetResult();
 
 			_telemetry.TrackChatCount(chatIds.Ids.Count);
 
