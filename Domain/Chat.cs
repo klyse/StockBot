@@ -13,10 +13,10 @@ namespace Domain
 		}
 
 		public ObjectId Id { get; set; }
-		public string ChatId { get; set; }
+		public string ChatId { get; set; } = "";
 
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-		public DateTime SignupDateTime { get; set; }
+		public DateTime SignupDateTime { get; set; } = DateTime.MinValue;
 
 		public ICollection<ChatSymbol> Symbols { get; set; }
 	}

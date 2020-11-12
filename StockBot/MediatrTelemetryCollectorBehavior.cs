@@ -6,7 +6,9 @@ using MediatR;
 
 namespace StockBot
 {
+#pragma warning disable 8714
 	public class MediatrTelemetryCollectorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+#pragma warning restore 8714
 	{
 		private readonly ITelemetryService _telemetryService;
 
