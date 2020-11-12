@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
+using Application.Requests.Chat.Commands.SendNow;
 using Application.Requests.Chat.Commands.StartTrackingSymbol;
 using Application.Requests.Chat.Commands.StopTrackingSymbol;
 using Application.Requests.Chat.Commands.UnsubscribeChat;
@@ -46,6 +47,7 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 					"/t" => new StartTrackingSymbolCommand(request._chatId, cleanCommand, request._command),
 					"/u" => new StopTrackingSymbolCommand(request._chatId, cleanCommand, request._command),
 					"/unsubscribe" => new UnsubscribeChatCommand(request._chatId, cleanCommand, request._command),
+					"/now" => new SendNowCommand(request._chatId, cleanCommand, request._command),
 					_ => null
 				};
 
