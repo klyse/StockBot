@@ -24,7 +24,7 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 
 		public class Handler : IRequestHandler<SendStockInfoMessageCommand, Unit>
 		{
-			private const int MaxInformationAgeDays = 2;
+			private const int MaxInformationAgeHours = 2;
 			private readonly ILogger<Handler> _log;
 			private readonly IStockDb _stockDb;
 			private readonly ITelegramService _telegramService;
@@ -46,7 +46,7 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 
 				var symbolsInfo = (await _stockDb.Symbols.Aggregate()
 						.Match(Builders<Symbol>.Filter.In(c => c.Name, chat.Symbols.Select(y => y.Name)))
-						.Match(r => r.LastInfo > DateTime.UtcNow.AddDays(-MaxInformationAgeDays))
+						.Match(r => r.LastInfo > DateTime.UtcNow.AddHours(-MaxInformationAgeHours))
 						.ToListAsync(cancellationToken))
 					.ToDictionary(c => c.Name, c => c);
 
