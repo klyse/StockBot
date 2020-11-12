@@ -18,6 +18,7 @@ namespace StockBot
 		{
 			builder.Services.AddLogging();
 			builder.Services.AddMediatR(typeof(SendStockInfoMessageCommand));
+			builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(MediatrTelemetryCollectorBehavior<,>));
 			builder.Services.AddScoped<IConfigService, Config>();
 			builder.Services.AddScoped<ITelegramService, TelegramService>();
 			builder.Services.AddScoped<IStockService, AlphavantageStockService>();

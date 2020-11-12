@@ -24,11 +24,9 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 		public class Handler : IRequestHandler<TelegramCommand, Unit>
 		{
 			private readonly IMediator _mediator;
-			private readonly IStockDb _stockDb;
 
 			public Handler(IStockDb stockDb, IMediator mediator)
 			{
-				_stockDb = stockDb;
 				_mediator = mediator;
 			}
 

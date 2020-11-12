@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using System.Collections.Generic;
+using Application.Services;
 using Microsoft.ApplicationInsights;
 
 namespace Application.Implementation
@@ -25,6 +26,14 @@ namespace Application.Implementation
 		public void TrackSymbolsToRefresh(int count)
 		{
 			_telemetryClient.TrackMetric("SymbolsToRefresh", count);
+		}
+
+		public void TrackMediatrRequest(string requestName, double timeMs)
+		{
+			_telemetryClient.TrackEvent(requestName, metrics: new Dictionary<string, double>
+			{
+				{"executionTime", timeMs}
+			});
 		}
 	}
 }
