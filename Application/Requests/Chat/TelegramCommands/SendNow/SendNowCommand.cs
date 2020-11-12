@@ -8,7 +8,7 @@ using Application.Services;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Requests.Chat.Commands.SendNow
+namespace Application.Requests.Chat.TelegramCommands.SendNow
 {
 	public class SendNowCommand : BaseTelegramCommand, IRequest
 	{

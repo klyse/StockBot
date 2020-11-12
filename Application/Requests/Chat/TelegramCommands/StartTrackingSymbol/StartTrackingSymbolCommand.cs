@@ -8,7 +8,7 @@ using Domain;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Requests.Chat.Commands.StartTrackingSymbol
+namespace Application.Requests.Chat.TelegramCommands.StartTrackingSymbol
 {
 	public class StartTrackingSymbolCommand : BaseTelegramCommand, IRequest
 	{

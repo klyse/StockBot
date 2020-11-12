@@ -4,7 +4,7 @@ using Application.Services;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Requests.Chat.Commands.UnsubscribeChat
+namespace Application.Requests.Chat.TelegramCommands.UnsubscribeChat
 {
 	public class UnsubscribeChatCommand : BaseTelegramCommand, IRequest
 	{

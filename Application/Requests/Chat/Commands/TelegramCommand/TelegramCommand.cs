@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
-using Application.Requests.Chat.Commands.SendNow;
-using Application.Requests.Chat.Commands.StartTrackingSymbol;
-using Application.Requests.Chat.Commands.StopTrackingSymbol;
-using Application.Requests.Chat.Commands.UnsubscribeChat;
+using Application.Requests.Chat.TelegramCommands.SendNow;
+using Application.Requests.Chat.TelegramCommands.StartTrackingSymbol;
+using Application.Requests.Chat.TelegramCommands.StopTrackingSymbol;
+using Application.Requests.Chat.TelegramCommands.UnsubscribeChat;
 using MediatR;
 
 namespace Application.Requests.Chat.Commands.TelegramCommand

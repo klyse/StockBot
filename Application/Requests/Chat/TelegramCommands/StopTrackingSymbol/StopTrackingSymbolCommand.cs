@@ -7,7 +7,7 @@ using Application.Services;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Requests.Chat.Commands.StopTrackingSymbol
+namespace Application.Requests.Chat.TelegramCommands.StopTrackingSymbol
 {
 	public class StopTrackingSymbolCommand : BaseTelegramCommand, IRequest
 	{
