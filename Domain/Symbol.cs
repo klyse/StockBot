@@ -13,16 +13,16 @@ namespace Domain
 		}
 
 		public ObjectId Id { get; set; }
-		public string Name { get; set; } = null!;
+		public string Name { get; set; } = "";
 
 		[BsonRepresentation(BsonType.Decimal128)]
-		public decimal LastPrice { get; set; }
+		public decimal LastPrice { get; set; } = 0;
 
 		[BsonRepresentation(BsonType.Decimal128)]
-		public decimal LastChangePercent { get; set; }
+		public decimal LastChangePercent { get; set; } = 0;
 
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-		public DateTime LastInfo { get; set; }
+		public DateTime LastInfo { get; set; } = DateTime.MinValue;
 
 		public List<SymbolPriceHistory> PriceHistory { get; set; }
 	}

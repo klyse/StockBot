@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -54,6 +55,12 @@ namespace Application.Requests.Stock.Commands.SendStockInfoMessage
 				stringBuilder.AppendLine("Hey here is your 📅 stock update 🌐");
 				stringBuilder.AppendLine();
 
+				decimal totalCurrentValue = 0;
+				decimal totalInvestedValue = 0;
+
+				var todaysStockStringList = new List<string>();
+				var totalsStockStringList = new List<string>();
+
 				foreach (var symbol in chat.Symbols)
 				{
 					Symbol quote;
@@ -67,10 +74,33 @@ namespace Application.Requests.Stock.Commands.SendStockInfoMessage
 						continue;
 					}
 
-					var emojiChart = quote.LastChangePercent >= 0 ? "📈" : "📉";
-					var emojiCircle = quote.LastChangePercent >= 0 ? "🟢" : "🔴"; // green : red
-					stringBuilder.AppendLine($"{quote.Name,-9} {emojiCircle}: {quote.LastChangePercent:F2}% {emojiChart} ({quote.LastPrice:F2}€)");
+					var todaysString = GetTodaysString(symbol.Name, quote.LastChangePercent, quote.LastPrice, symbol.AvgPurchasePrice, symbol.Quantity, out var currentValue, out var investedValue, out var capitalGain, out var capitalGainPercent);
+					todaysStockStringList.Add(todaysString);
+
+					var totalsString = GetTotalsString(symbol.Name, symbol.AvgPurchasePrice, symbol.Quantity, currentValue, investedValue, capitalGain, capitalGainPercent);
+					totalsStockStringList.Add(totalsString);
+
+					if (investedValue.HasValue)
+						totalInvestedValue += investedValue.Value;
+					if (currentValue.HasValue)
+						totalCurrentValue += currentValue.Value;
 				}
+
+				foreach (var builder in todaysStockStringList)
+					stringBuilder.AppendLine(builder);
+
+				stringBuilder.AppendLine();
+				stringBuilder.AppendLine("Totals 💵");
+
+				foreach (var builder in totalsStockStringList)
+					stringBuilder.AppendLine(builder);
+
+				stringBuilder.AppendLine();
+
+				var valueGain = totalCurrentValue - totalInvestedValue;
+				var valueGainPercent = valueGain / totalInvestedValue * 100;
+				var totalChart = valueGainPercent >= 0 ? "📈" : "📉";
+				stringBuilder.AppendLine($"Capital gain: <b>{valueGainPercent:N2}</b>%{totalChart} <b>{valueGain:N2}</b>€");
 
 				stringBuilder.AppendLine();
 				stringBuilder.AppendLine("Hope its going good for you ☺️");
@@ -87,6 +117,43 @@ namespace Application.Requests.Stock.Commands.SendStockInfoMessage
 				}
 
 				return Unit.Value;
+			}
+
+			private static string GetTodaysString(string symbol, decimal lastChangePercent, decimal lastPrice, decimal? avgPurchaseValue, decimal? quantity,
+				out decimal? currentValue, out decimal? investedValue, out decimal? capitalGain, out decimal? capitalGainPercent)
+			{
+				capitalGain = null;
+				capitalGainPercent = null;
+				investedValue = null;
+				currentValue = null;
+
+				var emojiCircle = lastChangePercent >= 0 ? "🟢" : "🔴";
+				var emojiChart = lastChangePercent >= 0 ? "📈" : "📉";
+
+				string str = $"{symbol}: {emojiCircle}{lastChangePercent:N2}%:{emojiChart} <b>{lastPrice:N2}€</b>";
+
+				if (avgPurchaseValue is {} && quantity is {})
+				{
+					currentValue = lastPrice * quantity;
+					investedValue = avgPurchaseValue * quantity;
+					capitalGain = currentValue - investedValue;
+					capitalGainPercent = capitalGain / investedValue * 100;
+				}
+
+				return str;
+			}
+
+			private static string GetTotalsString(string symbol, decimal? avgPurchaseValue, decimal? quantity,
+				decimal? currentValue, decimal? investedValue, decimal? capitalGain, decimal? capitalGainPercent)
+			{
+				var str = "";
+
+				var emojiCircle = capitalGainPercent >= 0 ? "🟢" : "🔴";
+				var emojiChart = capitalGainPercent >= 0 ? "📈" : "📉";
+
+				if (avgPurchaseValue.HasValue && quantity.HasValue && currentValue.HasValue && investedValue.HasValue && capitalGain.HasValue && capitalGainPercent.HasValue) str = $"{symbol}: {emojiCircle}{capitalGainPercent:N2}%:{emojiChart} <b>{capitalGain:N2}</b>";
+
+				return str;
 			}
 		}
 	}
