@@ -6,8 +6,8 @@ Deployment on Azure Functions.
 
 ## Configuration Keys
 * AlphavantageApiKey
-* TelegramChatId
-* TelegramApiKey
+* Telegram:ApiKey
+*	Telegram:NotificationToken (must be the same as in the specified callback https://url?token={notificationToken}
 * StockSymbols (Ex: AAPL,MSFT,FRA:AMZ)
 * Timers:DailyStockSummary (every day at 7 UTC: 0 0 7 * * *)
 
