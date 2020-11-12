@@ -15,12 +15,12 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 {
 	public class SendStockInfoMessageCommand : IRequest
 	{
+		private readonly string _chatId;
+
 		public SendStockInfoMessageCommand(string chatId)
 		{
-			ChatId = chatId;
+			_chatId = chatId;
 		}
-
-		public string ChatId { get; }
 
 		public class Handler : IRequestHandler<SendStockInfoMessageCommand, Unit>
 		{
@@ -39,7 +39,7 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 			public async Task<Unit> Handle(SendStockInfoMessageCommand request, CancellationToken cancellationToken)
 			{
 				var chat = await _stockDb.Chats.AsQueryable()
-					.FirstOrDefaultAsync(c => c.ChatId == request.ChatId, cancellationToken);
+					.FirstOrDefaultAsync(c => c.ChatId == request._chatId, cancellationToken);
 
 				if (chat is null)
 					throw new NullReferenceException("chat not found");
@@ -77,12 +77,12 @@ namespace Application.Stock.Command.SendStockInfoMessageCommand
 
 				try
 				{
-					await _telegramService.SendMessageAsync(request.ChatId, stringBuilder.ToString(), cancellationToken);
+					await _telegramService.SendMessageAsync(request._chatId, stringBuilder.ToString(), cancellationToken);
 				}
 				catch (ChatNotFoundException e)
 				{
 					await _stockDb.Chats.DeleteOneAsync(r => r.Id == chat.Id, cancellationToken);
-					_log.LogError(e, "Chat wit id {ChatId} not found, removed it from db", request.ChatId);
+					_log.LogError(e, "Chat wit id {ChatId} not found, removed it from db", request._chatId);
 					throw;
 				}
 
