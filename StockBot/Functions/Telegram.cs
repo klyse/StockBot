@@ -25,8 +25,8 @@ namespace StockBot.Functions
 			_configuration = configuration;
 		}
 
-		[FunctionName("TelegramUpdate")]
-		public async Task<IActionResult> TelegramUpdateAsync(
+		[FunctionName("TelegramNotification")]
+		public async Task<IActionResult> TelegramNotificationAsync(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
 			HttpRequest req, ILogger log)
 		{

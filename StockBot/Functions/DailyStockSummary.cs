@@ -59,8 +59,8 @@ namespace StockBot.Functions
 			await Task.WhenAll(parallelTasks);
 		}
 
-		[FunctionName("Start_DailyStockSummary")]
-		public async Task Start_DailyStockSummaryAsync([TimerTrigger("%Timers:DailyStockSummary%")]
+		[FunctionName("Timer_DailyStockSummary")]
+		public async Task Timer_DailyStockSummaryAsync([TimerTrigger("%Timers:DailyStockSummary%")]
 			TimerInfo myTimer, ILogger log,
 			[DurableClient] IDurableOrchestrationClient starter)
 		{
