@@ -6,7 +6,6 @@ using Application.Requests.Chat.Commands.SendNow;
 using Application.Requests.Chat.Commands.StartTrackingSymbol;
 using Application.Requests.Chat.Commands.StopTrackingSymbol;
 using Application.Requests.Chat.Commands.UnsubscribeChat;
-using Application.Services;
 using MediatR;
 
 namespace Application.Requests.Chat.Commands.TelegramCommand
@@ -26,7 +25,7 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 		{
 			private readonly IMediator _mediator;
 
-			public Handler(IStockDb stockDb, IMediator mediator)
+			public Handler(IMediator mediator)
 			{
 				_mediator = mediator;
 			}
