@@ -6,7 +6,7 @@ using Application.Services;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Stock.Queries.GetChatIds
+namespace Application.Requests.Stock.Queries.GetChatIds
 {
 	public class GetChatsIdsQuery : IRequest<ChatIdsDto>
 	{

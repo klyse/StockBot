@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
-namespace Application.Stock.Command.UpdateSymbolsCommand
+namespace Application.Requests.Stock.Commands.UpdateSymbolsCommand
 {
 	public class UpdateSymbolsCommand : IRequest
 	{
@@ -34,7 +34,7 @@ namespace Application.Stock.Command.UpdateSymbolsCommand
 			{
 				var symbols = _stockDb.Chats.AsQueryable()
 					.SelectMany(r => r.Symbols)
-					.GroupBy(r => r.Name)
+					.GroupBy(r => r.Name.ToUpperInvariant())
 					.Select(r => r.Key)
 					.ToList();
 
@@ -42,7 +42,7 @@ namespace Application.Stock.Command.UpdateSymbolsCommand
 
 				// update only symbols that are older than 5 min
 				var upToDateSymbols = await _stockDb.Symbols.Find(r => r.LastInfo > DateTime.UtcNow.AddMinutes(-UpdateIntervalMin))
-					.Project(r => r.Name)
+					.Project(r => r.Name.ToUpperInvariant())
 					.ToListAsync(cancellationToken);
 
 				symbols = symbols.Except(upToDateSymbols)

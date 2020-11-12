@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Application.Stock.Queries.GetChatIds
+namespace Application.Requests.Stock.Queries.GetChatIds
 {
 	public class ChatIdsDto
 	{

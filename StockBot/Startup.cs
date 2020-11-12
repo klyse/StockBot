@@ -1,7 +1,7 @@
 ﻿using Application.Implementation;
+using Application.Requests.Stock.Commands.SendStockInfoMessageCommand;
 using Application.Services;
 using Application.Services.StockService;
-using Application.Stock.Command.SendStockInfoMessageCommand;
 using MediatR;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;

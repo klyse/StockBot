@@ -11,7 +11,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Telegram.Bot.Exceptions;
 
-namespace Application.Stock.Command.SendStockInfoMessageCommand
+namespace Application.Requests.Stock.Commands.SendStockInfoMessageCommand
 {
 	public class SendStockInfoMessageCommand : IRequest
 	{

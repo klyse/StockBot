@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain
 {
@@ -11,7 +13,11 @@ namespace Domain
 		}
 
 		public ObjectId Id { get; set; }
-		public string ChatId { get; set; } = null!;
+		public string ChatId { get; set; }
+
+		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+		public DateTime SignupDateTime { get; set; }
+
 		public ICollection<ChatSymbol> Symbols { get; set; }
 	}
 }

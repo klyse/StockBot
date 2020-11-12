@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Requests.Stock.Commands.SendStockInfoMessageCommand;
+using Application.Requests.Stock.Commands.UpdateSymbolsCommand;
+using Application.Requests.Stock.Queries.GetChatIds;
 using Application.Services;
-using Application.Stock.Command.SendStockInfoMessageCommand;
-using Application.Stock.Command.UpdateSymbolsCommand;
-using Application.Stock.Queries.GetChatIds;
 using MediatR;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 
-namespace StockBot
+namespace StockBot.Functions
 {
 	public class DailyStockSummary
 	{
@@ -29,13 +29,13 @@ namespace StockBot
 		}
 
 		[FunctionName("UpdateSymbols")]
-		public async Task UpdateSymbols([ActivityTrigger] object o, ILogger log)
+		public async Task UpdateSymbolsAsync([ActivityTrigger] object o, ILogger log)
 		{
 			await _mediator.Send(new UpdateSymbolsCommand());
 		}
 
 		[FunctionName("Orchestration_DailyStockSummary")]
-		public async Task Orchestration_DailyStockSummary(
+		public async Task Orchestration_DailyStockSummaryAsync(
 			[OrchestrationTrigger] IDurableOrchestrationContext context,
 			ILogger logger)
 		{
@@ -60,7 +60,7 @@ namespace StockBot
 		}
 
 		[FunctionName("Start_DailyStockSummary")]
-		public async Task Start_DailyStockSummary([TimerTrigger("%Timers:DailyStockSummary%")]
+		public async Task Start_DailyStockSummaryAsync([TimerTrigger("%Timers:DailyStockSummary%")]
 			TimerInfo myTimer, ILogger log,
 			[DurableClient] IDurableOrchestrationClient starter)
 		{
