@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
+using Application.Requests.Chat.TelegramCommands.GetEquities;
 using Application.Requests.Chat.TelegramCommands.SendNow;
 using Application.Requests.Chat.TelegramCommands.StartTrackingSymbol;
 using Application.Requests.Chat.TelegramCommands.UnsubscribeChat;
@@ -47,6 +48,7 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 					"/u" => new UntrackSymbolCommand(request._chatId, cleanCommand, request._command),
 					"/unsubscribe" => new UnsubscribeChatCommand(request._chatId, cleanCommand, request._command),
 					"/now" => new SendNowCommand(request._chatId, cleanCommand, request._command),
+					"/equities" => new GetEquitiesCommand(request._chatId, cleanCommand, request._command),
 					_ => null
 				};
 

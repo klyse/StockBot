@@ -35,7 +35,8 @@ namespace Application.Requests.Chat.TelegramCommands.SendNow
 				if (chat is null)
 					throw new ChatNotFoundException();
 
-				foreach (var symbol in chat.Symbols) await _mediator.Send(new UpdateSymbolCommand(symbol.Name), cancellationToken);
+				foreach (var symbol in chat.Symbols)
+					await _mediator.Send(new UpdateSymbolCommand(symbol.Name), cancellationToken);
 
 				await _mediator.Send(new SendStockInfoMessageCommand(request.ChatId), cancellationToken);
 

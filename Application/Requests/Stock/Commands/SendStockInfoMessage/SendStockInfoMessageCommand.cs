@@ -25,7 +25,7 @@ namespace Application.Requests.Stock.Commands.SendStockInfoMessage
 
 		public class Handler : IRequestHandler<SendStockInfoMessageCommand, Unit>
 		{
-			private const int MaxInformationAgeHours = 2;
+			private const int MaxInformationAgeHours = 1;
 			private readonly ILogger<Handler> _log;
 			private readonly IStockDb _stockDb;
 			private readonly ITelegramService _telegramService;
@@ -130,7 +130,7 @@ namespace Application.Requests.Stock.Commands.SendStockInfoMessage
 				var emojiCircle = lastChangePercent >= 0 ? "🟢" : "🔴";
 				var emojiChart = lastChangePercent >= 0 ? "📈" : "📉";
 
-				string str = $"{symbol}: {emojiCircle}{lastChangePercent:N2}%:{emojiChart} <b>{lastPrice:N2}€</b>";
+				string str = $"{symbol}: {emojiCircle}{lastChangePercent:N2}%:{emojiChart} <b>{lastPrice:N2}</b>€";
 
 				if (avgPurchaseValue is {} && quantity is {})
 				{
@@ -151,7 +151,8 @@ namespace Application.Requests.Stock.Commands.SendStockInfoMessage
 				var emojiCircle = capitalGainPercent >= 0 ? "🟢" : "🔴";
 				var emojiChart = capitalGainPercent >= 0 ? "📈" : "📉";
 
-				if (avgPurchaseValue.HasValue && quantity.HasValue && currentValue.HasValue && investedValue.HasValue && capitalGain.HasValue && capitalGainPercent.HasValue) str = $"{symbol}: {emojiCircle}{capitalGainPercent:N2}%:{emojiChart} <b>{capitalGain:N2}</b>";
+				if (avgPurchaseValue.HasValue && quantity.HasValue && currentValue.HasValue && investedValue.HasValue && capitalGain.HasValue && capitalGainPercent.HasValue)
+					str = $"{symbol}: {emojiCircle}{capitalGainPercent:N2}%:{emojiChart} <b>{capitalGain:N2}</b>€";
 
 				return str;
 			}
