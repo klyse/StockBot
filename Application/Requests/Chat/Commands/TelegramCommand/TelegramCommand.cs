@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
+using Application.Requests.Chat.Commands.StartTrackingSymbol;
+using Application.Requests.Chat.Commands.StopTrackingSymbol;
 using Application.Services;
 using MediatR;
 
@@ -41,8 +43,8 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 
 				IRequest? trackStatusParsed = command switch
 				{
-					"/t" => new StartTrackingCommand.StartTrackingCommand(request._chatId, cleanCommand, request._command),
-					"/u" => new StopTrackingCommand.StopTrackingCommand(request._chatId, cleanCommand, request._command),
+					"/t" => new StartTrackingSymbolCommand(request._chatId, cleanCommand, request._command),
+					"/u" => new StopTrackingSymbolCommand(request._chatId, cleanCommand, request._command),
 					_ => null
 				};
 

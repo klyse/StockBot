@@ -5,14 +5,9 @@ namespace Application.Implementation
 {
 	public class Config : IConfigService
 	{
-		public string GetTelegramChatId()
-		{
-			return Get("TelegramChatId");
-		}
-
 		public string GetTelegramApiKey()
 		{
-			return Get("TelegramApiKey");
+			return Get("Telegram:ApiKey");
 		}
 
 		public string GetAlphavantageApiKey()
@@ -23,6 +18,11 @@ namespace Application.Implementation
 		public string GetMongoDbConnectionString()
 		{
 			return Get("ConnectionStrings:MongoDb");
+		}
+
+		public string GetTelegramNotificationToken()
+		{
+			return Get("Telegram:NotificationToken");
 		}
 
 		private string Get(string key)

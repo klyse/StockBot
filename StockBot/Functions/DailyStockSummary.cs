@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application.Requests.Stock.Commands.SendStockInfoMessageCommand;
-using Application.Requests.Stock.Commands.UpdateSymbolsCommand;
+using Application.Requests.Stock.Commands.SendStockInfoMessage;
+using Application.Requests.Stock.Commands.UpdateSymbols;
 using Application.Requests.Stock.Queries.GetChatIds;
 using Application.Services;
 using MediatR;

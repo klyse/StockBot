@@ -4,15 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
 using Application.Services;
-using Domain;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Requests.Chat.Commands.StartTrackingCommand
+namespace Application.Requests.Chat.Commands.StopTrackingSymbol
 {
-	public class StartTrackingCommand : BaseTelegramCommand, IRequest
+	public class StopTrackingSymbolCommand : BaseTelegramCommand, IRequest
 	{
-		public StartTrackingCommand(string chatId, string command, string fullCommand) : base(chatId, command, fullCommand)
+		public StopTrackingSymbolCommand(string chatId, string command, string fullCommand) : base(chatId, command, fullCommand)
 		{
 			var symbol = command.Split(' ').FirstOrDefault();
 
@@ -24,7 +23,7 @@ namespace Application.Requests.Chat.Commands.StartTrackingCommand
 
 		private string Symbol { get; }
 
-		public class Handler : IRequestHandler<StartTrackingCommand, Unit>
+		public class Handler : IRequestHandler<StopTrackingSymbolCommand, Unit>
 		{
 			private readonly IStockDb _stockDb;
 			private readonly ITelegramService _telegramService;
@@ -35,15 +34,11 @@ namespace Application.Requests.Chat.Commands.StartTrackingCommand
 				_telegramService = telegramService;
 			}
 
-			public async Task<Unit> Handle(StartTrackingCommand request, CancellationToken cancellationToken)
+			public async Task<Unit> Handle(StopTrackingSymbolCommand request, CancellationToken cancellationToken)
 			{
 				_stockDb.Chats.FindOneAndUpdate<Domain.Chat>(r => r.ChatId == request.ChatId,
 					new UpdateDefinitionBuilder<Domain.Chat>()
-						.AddToSet(r => r.Symbols,
-							new ChatSymbol
-							{
-								Name = request.Symbol
-							})
+						.PullFilter(r => r.Symbols, q => q.Name == request.Symbol)
 						.SetOnInsert(r => r.ChatId, request.ChatId)
 						.SetOnInsert(r => r.SignupDateTime, DateTime.UtcNow),
 					new FindOneAndUpdateOptions<Domain.Chat, Domain.Chat>
@@ -52,7 +47,7 @@ namespace Application.Requests.Chat.Commands.StartTrackingCommand
 					},
 					cancellationToken);
 
-				await _telegramService.SendMessageAsync(request.ChatId, $"Started tracking {request.Symbol}", cancellationToken);
+				await _telegramService.SendMessageAsync(request.ChatId, $"Stopped tracking {request.Symbol}", cancellationToken);
 
 				return Unit.Value;
 			}

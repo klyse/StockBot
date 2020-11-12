@@ -1,5 +1,5 @@
 ﻿using Application.Implementation;
-using Application.Requests.Stock.Commands.SendStockInfoMessageCommand;
+using Application.Requests.Stock.Commands.SendStockInfoMessage;
 using Application.Services;
 using Application.Services.StockService;
 using MediatR;

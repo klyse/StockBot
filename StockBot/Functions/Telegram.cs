@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Application.Exceptions;
 using Application.Requests.Chat.Commands.TelegramCommand;
+using Application.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace StockBot.Functions
 {
 	public class Telegram
 	{
+		private readonly IConfigService _configuration;
 		private readonly IMediator _mediator;
 
-		public Telegram(IMediator mediator)
+		public Telegram(IMediator mediator, IConfigService configuration)
 		{
 			_mediator = mediator;
+			_configuration = configuration;
 		}
 
 		[FunctionName("TelegramUpdate")]
@@ -27,6 +31,13 @@ namespace StockBot.Functions
 			HttpRequest req, ILogger log)
 		{
 			var content = await new StreamReader(req.Body).ReadToEndAsync();
+
+			// just make sure the call is really from telegram
+			string requestToken = req.Query["token"];
+			var notificationToken = _configuration.GetTelegramNotificationToken();
+
+			if (requestToken != notificationToken)
+				throw new NotificationKeysDontMatch();
 
 			if (string.IsNullOrWhiteSpace(content))
 				return new BadRequestObjectResult("invalid body");

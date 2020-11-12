@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
-namespace Application.Requests.Stock.Commands.UpdateSymbolsCommand
+namespace Application.Requests.Stock.Commands.UpdateSymbols
 {
 	public class UpdateSymbolsCommand : IRequest
 	{

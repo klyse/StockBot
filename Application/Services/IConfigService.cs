@@ -2,7 +2,7 @@
 {
 	public interface IConfigService
 	{
-		string GetTelegramChatId();
+		string GetTelegramNotificationToken();
 		string GetTelegramApiKey();
 		string GetAlphavantageApiKey();
 		string GetMongoDbConnectionString();
