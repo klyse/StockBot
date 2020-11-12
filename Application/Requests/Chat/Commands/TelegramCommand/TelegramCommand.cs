@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Application.Exceptions;
 using Application.Requests.Chat.Commands.StartTrackingSymbol;
 using Application.Requests.Chat.Commands.StopTrackingSymbol;
+using Application.Requests.Chat.Commands.UnsubscribeChat;
 using Application.Services;
 using MediatR;
 
@@ -35,16 +36,18 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 			{
 				var splitCommand = request._command.Split(' ');
 
-				if (splitCommand.Length < 2)
-					throw new InvalidTelegramCommand();
 				var command = splitCommand.First();
-				var cleanCommand = string.Join(' ', splitCommand.Skip(1));
+
+				string cleanCommand = "";
+				if (splitCommand.Length > 1)
+					cleanCommand = string.Join(' ', splitCommand.Skip(1));
 
 
 				IRequest? trackStatusParsed = command switch
 				{
 					"/t" => new StartTrackingSymbolCommand(request._chatId, cleanCommand, request._command),
 					"/u" => new StopTrackingSymbolCommand(request._chatId, cleanCommand, request._command),
+					"/unsubscribe" => new UnsubscribeChatCommand(request._chatId, cleanCommand, request._command),
 					_ => null
 				};
 

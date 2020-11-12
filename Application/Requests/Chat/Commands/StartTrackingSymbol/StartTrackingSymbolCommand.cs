@@ -52,7 +52,7 @@ namespace Application.Requests.Chat.Commands.StartTrackingSymbol
 					},
 					cancellationToken);
 
-				await _telegramService.SendMessageAsync(request.ChatId, $"Started tracking {request.Symbol}", cancellationToken);
+				await _telegramService.SendMessageAsync(request.ChatId, $"Started tracking {request.Symbol} 🗠", cancellationToken);
 
 				return Unit.Value;
 			}
