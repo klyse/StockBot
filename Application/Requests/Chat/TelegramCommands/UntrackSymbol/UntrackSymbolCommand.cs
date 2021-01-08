@@ -33,7 +33,7 @@ namespace Application.Requests.Chat.TelegramCommands.UntrackSymbol
 				if (string.IsNullOrWhiteSpace(symbol))
 				{
 					await _telegramService.SendMessageAsync(request.ChatId, $"Symbol name is empty.</br>Syntax: <i>{request.Syntax}</i>", cancellationToken);
-					throw new InvalidTelegramCommand();
+					throw new InvalidTelegramCommand(request.Command);
 				}
 
 				symbol = symbol.ToUpperInvariant();

@@ -2,7 +2,7 @@
 {
 	public class InvalidTelegramCommand : HttpException
 	{
-		public InvalidTelegramCommand() : base(500, "invalid telegram command")
+		public InvalidTelegramCommand(string command) : base(500, $"invalid telegram command {command}")
 		{
 		}
 	}

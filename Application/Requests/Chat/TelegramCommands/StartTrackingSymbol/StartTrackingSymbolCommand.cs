@@ -35,7 +35,7 @@ namespace Application.Requests.Chat.TelegramCommands.StartTrackingSymbol
 				if (!GetCommand(splitCommand, 0, out var symbol))
 				{
 					await _telegramService.SendMessageAsync(request.ChatId, $"Symbol name is empty. Syntax: <i>{request.Syntax}</i>", cancellationToken);
-					throw new InvalidTelegramCommand();
+					throw new InvalidTelegramCommand(request.Command);
 				}
 
 				int? quantity = null;
@@ -48,7 +48,7 @@ namespace Application.Requests.Chat.TelegramCommands.StartTrackingSymbol
 					else
 					{
 						await _telegramService.SendMessageAsync(request.ChatId, $"Cannot parse Quantity (optional). Syntax: {request.Syntax}", cancellationToken);
-						throw new InvalidTelegramCommand();
+						throw new InvalidTelegramCommand(request.Command);
 					}
 				}
 
@@ -62,7 +62,7 @@ namespace Application.Requests.Chat.TelegramCommands.StartTrackingSymbol
 					else
 					{
 						await _telegramService.SendMessageAsync(request.ChatId, $"Cannot parse Average Purchase Price (optional). Syntax: {request.Syntax}", cancellationToken);
-						throw new InvalidTelegramCommand();
+						throw new InvalidTelegramCommand(request.Command);
 					}
 				}
 

@@ -53,7 +53,7 @@ namespace Application.Requests.Chat.Commands.TelegramCommand
 				};
 
 				if (trackStatusParsed is null)
-					throw new InvalidTelegramCommand();
+					throw new InvalidTelegramCommand(command);
 
 				await _mediator.Send(trackStatusParsed, cancellationToken);
 
