@@ -8,9 +8,9 @@
 	<ItemGroup>
 	  <PackageReference Include="AlphaVantage.Net.Stocks" Version="2.0.1" />
 	  <PackageReference Include="MediatR" Version="9.0.0" />
-	  <PackageReference Include="Microsoft.ApplicationInsights" Version="2.15.0" />
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.9" />
-	  <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
+	  <PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+	  <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
 	  <PackageReference Include="Telegram.Bot" Version="15.7.1" />
 	</ItemGroup>
 
